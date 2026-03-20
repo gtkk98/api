@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data               // Generates: getters, setters, toString, equals, hashCode
-@Builder            // Generates: builder pattern (ApiResponse.builder().success(true).build())
-@NoArgsConstructor  // Generates: empty constructor → new ApiResponse()
-@AllArgsConstructor // Generates: full constructor → new ApiResponse(success, message, data)
+@Data               // getters, setters, toString, equals, hashCode
+@Builder            // builder pattern (ApiResponse.builder().success(true).build())
+@NoArgsConstructor  // empty constructor → new ApiResponse()
+@AllArgsConstructor // full constructor → new ApiResponse(success, message, data)
 public class ApiResponse<T> {
-    // This class is a "generic" class — the <T> means it can hold ANY type of data.
+    // This class is a generic class — the <T> means it can hold ANY type of data.
     // For example: ApiResponse<ProductResponse> or ApiResponse<List<ProductResponse>>
     private boolean success; // Indicates if the API call was successful
 
@@ -19,7 +19,7 @@ public class ApiResponse<T> {
     private T data; // The actual data being returned (e.g., a product, a list of products, etc.)
 
     // Static factory methods — shortcuts to create responses
-    
+
     // Call this when something succeeds WITH data
     // Example: ApiResponse.ok("Product fetched", productData)
     public static <T> ApiResponse<T> ok(String message, T data) {
@@ -27,6 +27,26 @@ public class ApiResponse<T> {
                 .success(true)
                 .message(message)
                 .data(data)
+                .build();
+    }
+
+    // Call this when something succeeds WITHOUT data
+    // Example: ApiResponse.ok("Product deleted")
+    public static <T> ApiResponse<T> ok(String message) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
+                .data(null)
+                .build();
+    }
+
+    // Call this when something fails
+    // Example: ApiResponse.error("Product not found")
+    public static <T> ApiResponse<T> error(String message) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .data(null)
                 .build();
     }
 }
